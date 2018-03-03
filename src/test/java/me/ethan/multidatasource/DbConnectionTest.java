@@ -19,6 +19,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import lombok.extern.slf4j.Slf4j;
 import me.ethan.multidatasource.feed.Feed;
 import me.ethan.multidatasource.feed.FeedRepository;
+import me.ethan.multidatasource.feed.FeedService;
 import me.ethan.multidatasource.product.Product;
 import me.ethan.multidatasource.product.ProductRepository;
 
@@ -36,14 +37,14 @@ public class DbConnectionTest {
      * feed
      */
     @Autowired
-    @Qualifier("feedEntityManagerFactory")
+//    @Qualifier("feedEntityManagerFactory")
     private LocalContainerEntityManagerFactoryBean feedEntityManagerFactory;
 
-    @PersistenceContext(unitName = "feed")
+//    @PersistenceContext(unitName = "feed")
     private EntityManager feedEntityManager;
 
     @Autowired
-    @Qualifier("feedTransactionManager")
+//    @Qualifier("feedTransactionManager")
     public PlatformTransactionManager feedTransactionManager;
 
     @Autowired
@@ -53,14 +54,14 @@ public class DbConnectionTest {
      * product
      */
     @Autowired
-    @Qualifier("productEntityManagerFactory")
+//    @Qualifier("productEntityManagerFactory")
     private LocalContainerEntityManagerFactoryBean productEntityManagerFactory;
 
-    @PersistenceContext(unitName = "product")
+//    @PersistenceContext(unitName = "product")
     private EntityManager productEntityManager;
 
     @Autowired
-    @Qualifier("productTransactionManager")
+//    @Qualifier("productTransactionManager")
     public PlatformTransactionManager productTransactionManager;
 
     @Autowired
@@ -173,4 +174,86 @@ org.springframework.transaction.IllegalTransactionStateException: Pre-bound JDBC
 	at com.intellij.rt.execution.junit.JUnitStarter.prepareStreamsAndStart(JUnitStarter.java:242)
 	at com.intellij.rt.execution.junit.JUnitStarter.main(JUnitStarter.java:70)
      */
+
+    @Transactional
+    @Test
+    public void test3() throws Exception {
+
+        DbContextHolder.setRouting(DbType.FEED);
+
+//        log.info("ethan test : {}", promoEntityManagerFactory.getPersistenceUnitName());
+//        log.info("ethan test : {}", promoEntityManagerFactory.getPersistenceUnitInfo().getSharedCacheMode());
+//        log.info("ethan test : {}", promoEntityManager.getProperties());
+//
+        feedEntityManagerFactory.getJpaPropertyMap()
+                .forEach((s, o) -> log.info("ethan test jpa : {} - {}", s, o));
+        feedEntityManagerFactory.getJpaVendorAdapter().getJpaPropertyMap()
+                .forEach((s, o) -> log.info("ethan test jpa vendor - {} : {}", s, o));
+//
+//        HikariDataSource dataSource = (HikariDataSource) promoEntityManagerFactory.getDataSource();
+//        log.info("ethan test hikariCP - {}", dataSource.getMaxLifetime());
+//
+//        JpaTransactionManager transactionManager = (JpaTransactionManager) promoTransactionManager;
+//        log.info("ethan test transactionManager - {}", transactionManager.getPersistenceUnitName());
+//        transactionManager.getJpaPropertyMap()
+//                .forEach((s, o) -> log.info("ethan test transactionManager - {} : {}", s, o));
+
+        Feed feed = Feed.builder()
+                .title("testTitle")
+                .build();
+
+        feedRepository.save(feed);
+
+//        List<AbusingDeviceUser> abusingDeviceUsers = abusingDeviceUserRepository.findAll();
+//        assertThat(abusingDeviceUsers).isNotEmpty();
+//        abusingDeviceUsers.forEach(abusingDeviceUser -> log.info("{}", abusingDeviceUser));
+    }
+
+    @Test
+    public void test4() throws Exception {
+//        DbContextHolder.setRouting(DbType.PRODUCT);  // Todo: transaction 시작전에 setting 해줘야 한다..!!
+
+        test5();
+
+        List<Product> products = productRepository.findAll();
+        assertThat(products).isNotEmpty();
+        products.forEach(product -> log.info("{}", product));
+
+        // exception throw 상황
+//        DbContextHolder.clearDbRouting();
+//        DbContextHolder.setRouting(DbType.FEED);
+//
+//        products = productRepository.findAll();
+    }
+
+    @Transactional
+    @Test
+    public void test5() {
+        List<Product> products = productRepository.findAll();
+        assertThat(products).isNotEmpty();
+        products.forEach(product -> log.info("{}", product));
+    }
+
+    @Autowired
+    private FeedService feedService;
+
+    @Test
+    public void test6 () throws Exception {
+
+        feedService.test();  // success
+    }
+
+    @Test
+    public void test7 () throws Exception {
+        // given :
+
+
+        productRepository.findByProductId(1L);
+
+
+        // when :
+
+        // then :
+
+    }
 }

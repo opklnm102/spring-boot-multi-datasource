@@ -8,6 +8,7 @@ http://www.baeldung.com/spring-data-jpa-multiple-databases
 https://sonegy.wordpress.com/2013/05/15/spring-data-jpa-multiple-datasource-%EC%82%AC%EC%9A%A9/
 http://egloos.zum.com/kwon37xi/v/5364167
 https://spring.io/blog/2007/01/23/dynamic-datasource-routing/
+https://okky.kr/article/306926
  */
 @SpringBootApplication
 public class MultiDatasourceApplication {
